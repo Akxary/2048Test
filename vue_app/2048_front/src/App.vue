@@ -13,8 +13,8 @@ export default {
       USER_DATA: {id:1,name:"test", score:-1},
       grid: [
         [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
+        [0, 2, 0, 0],
+        [0, 0, 4, 0],
         [0, 0, 0, 0]
       ]
     }
@@ -54,7 +54,7 @@ export default {
     <div>
       <div v-for="(row, idx) in grid" :key="idx">
         <div v-for="(num, idx1) in row" :key="idx1" style="display: inline-flex; margin: 3px; padding: 3px;">
-          <div v-if="num!=0">{{ num }}</div>
+          <div v-if="num!=0" style="height: 25px; width: 25px; background-color: green;">{{ num }}</div>
           <div v-else style="height: 25px; width: 25px; background-color: aqua;"></div>
         </div>
       </div>
