@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <body>
+    <button onclick="tst_fetch()" font-weight="30px">click</button>
+  </body>
+  <script>
+    async function tst_fetch() {
+    fetch('http://localhost:8005/user/2')
+    .then(res => res.json())
+    .then(data => {console.log(data)})
+    }
+  </script>
+</html>

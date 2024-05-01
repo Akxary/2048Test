@@ -1,0 +1,13 @@
+
+services:
+  backend:
+    build:
+      context: ./fast_api_app
+      dockerfile: Dockerfile
+    command: poetry run python main.py
+    volumes:
+      - ./fast_api_app/:/usr/src/fast_api_app/
+    ports:
+      - "${OUT_BACK_PORT}:${IN_BACK_PORT}"
+    env_file:
+      - ./.env.dev
