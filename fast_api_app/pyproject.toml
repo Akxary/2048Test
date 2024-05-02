@@ -13,6 +13,8 @@ black = "^24.4.2"
 mypy = "^1.10.0"
 pydantic = "^2.7.1"
 sqlalchemy = "^2.0.29"
+pydantic-settings = "^2.2.1"
+psycopg2 = "^2.9.9"
 
 
 [build-system]

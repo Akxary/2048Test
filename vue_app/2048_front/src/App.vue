@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
 import { getUserByName, type User } from './userFuncs';
 </script>
 
@@ -10,7 +8,7 @@ export default {
     return {
       MAX_VALUE: 2048,
       USER_NAME: 'test',
-      USER_DATA: {id:1,name:"test", score:-1},
+      USER_DATA: {id:1,name:"test", score:-1, max_score:-1},
       grid: [
         [0, 0, 0, 0],
         [0, 2, 0, 0],
@@ -47,10 +45,11 @@ export default {
     <br>
     <input v-model="USER_NAME" id="name-inp">
     <br>
-    <button @click="getUser">Get user</button>
-    <p>Current name is: {{ USER_NAME }}</p>
-    <p>Current score is: {{ USER_DATA.score }}</p>
-
+    <button @click="getUser">Получить данные пользователя</button>
+    <p>Имя пользователя: {{ USER_NAME }}</p>
+    <p>Текущий счёт: {{ USER_DATA.score }}</p>
+    <p>Максимальный счёт: {{ USER_DATA.max_score }}</p>
+    <p>Рекорд ХХ поставлен пользователем ХХ</p>
     <div>
       <div v-for="(row, idx) in grid" :key="idx">
         <div v-for="(num, idx1) in row" :key="idx1" style="display: inline-flex; margin: 3px; padding: 3px;">

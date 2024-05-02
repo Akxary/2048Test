@@ -1,13 +1,13 @@
 from pydantic import BaseModel, Field
 
 
-class BaseUser(BaseModel):
-    id: int
-
-
-class CreateUser(BaseUser):
+class CreateUser(BaseModel):
     name: str
 
 
-class GetUser(CreateUser):
-    score:int = Field(default=0)
+class BaseUser(CreateUser):
+    id: int
+
+
+class GetUser(BaseUser):
+    score: int = Field(default=0)
