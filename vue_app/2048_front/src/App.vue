@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
-import { getUserByName, User } from './userFuncs';
+import { getUserByName, type User } from './userFuncs';
 </script>
 
 <script lang="ts">

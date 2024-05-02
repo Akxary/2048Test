@@ -1,6 +1,7 @@
 
 services:
   backend:
+    hostname: backend
     build:
       context: ./fast_api_app
       dockerfile: Dockerfile
@@ -11,3 +12,14 @@ services:
       - "${OUT_BACK_PORT}:${IN_BACK_PORT}"
     env_file:
       - ./.env.dev
+
+  frontend:
+    build:
+      context: ./vue_app/2048_front
+      dockerfile: Dockerfile
+    volumes:
+      - ./vue_app/2048_front/:/usr/src/app/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
