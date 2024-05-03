@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 import os
 from routes.user import router as user_router
+from routes.score import router as score_router
 from fastapi.middleware.cors import CORSMiddleware
 from db_connect import Base, engine
 
@@ -9,6 +10,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 app.include_router(user_router)
+app.include_router(score_router)
 port = int(os.environ.get("BACK_PORT", 8007))
 
 origins = [

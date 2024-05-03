@@ -28,6 +28,7 @@ async def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     db_user = get_db_user_by_id(db, user_id)
     if not db_user:
         raise HTTPException(status_code=409, detail="User does not exist")
+    # почему-то не работает get_max_user_score
     db_score = get_max_user_score(db, user_id)
     if not db_score:
         return GetUser(id=db_user.id, name=db_user.name)
@@ -58,9 +59,9 @@ async def get_user_with_max_score(db: Session = Depends(get_db)):
     if not db_score:
         raise HTTPException(status_code=409, detail="No user with max score exists")
 
-    db_user = get_db_user_by_id(db, db_score.id)
+    db_user = get_db_user_by_id(db, db_score.user_id)
 
     if not db_user:
-        raise HTTPException(status_code=409, detail=f"User with id {db_score.id} and score {db_score.value:_.0f} does not exist")
+        raise HTTPException(status_code=409, detail=f"User with id {db_score.user_id} and score {db_score.value:_.0f} does not exist")
 
     return GetUser(id=db_user.id, name=db_user.name, score=db_score.value)

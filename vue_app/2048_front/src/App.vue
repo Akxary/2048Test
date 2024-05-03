@@ -6,9 +6,12 @@ import { getUserByName, type User } from './userFuncs';
 export default {
   data() {
     return {
+      BACK_URL: "http://localhost:8005",
       MAX_VALUE: 2048,
       USER_NAME: 'test',
-      USER_DATA: {id:1,name:"test", score:-1, max_score:-1},
+      CURR_SCORE: -1,
+      USER_DATA: {id:1,name:"test", score:-1},
+      MAX_RES_DATA: {id:-1, name:"", score: -1},
       grid: [
         [0, 0, 0, 0],
         [0, 2, 0, 0],
@@ -19,10 +22,17 @@ export default {
   },
   methods: {
     async getUser() {
-      this.USER_DATA = await getUserByName(this.USER_NAME);
+      this.USER_DATA = await fetch(`${this.BACK_URL}/user/name/${this.USER_NAME}`)
+          .then(res => res.json())
       console.log(this.USER_DATA);
       console.log(this.USER_DATA.name);
       this.USER_NAME = this.USER_DATA.name;
+    },
+
+    async getMaxRes() {
+      this.MAX_RES_DATA = await fetch(`${this.BACK_URL}/user/max-score/`)
+      .then(res => res.json())
+      console.log(this.MAX_RES_DATA);
     }
   },
 
@@ -40,16 +50,17 @@ export default {
   </header>
 
   <main>
-    
+    <button @click="getMaxRes">Получить рекорд</button>
+    <br>
     <label for="name-inp">Введите имя пользователя</label>
     <br>
     <input v-model="USER_NAME" id="name-inp">
     <br>
     <button @click="getUser">Получить данные пользователя</button>
     <p>Имя пользователя: {{ USER_NAME }}</p>
-    <p>Текущий счёт: {{ USER_DATA.score }}</p>
-    <p>Максимальный счёт: {{ USER_DATA.max_score }}</p>
-    <p>Рекорд ХХ поставлен пользователем ХХ</p>
+    <p>Текущий счёт: {{ CURR_SCORE }}</p>
+    <p>Максимальный счёт: {{ USER_DATA.score }}</p>
+    <p>Рекорд {{ MAX_RES_DATA.score}} поставлен пользователем {{ MAX_RES_DATA.name}}</p>
     <div>
       <div v-for="(row, idx) in grid" :key="idx">
         <div v-for="(num, idx1) in row" :key="idx1" style="display: inline-flex; margin: 3px; padding: 3px;">
