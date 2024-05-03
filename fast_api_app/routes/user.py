@@ -1,7 +1,9 @@
-from fastapi.routing import APIRouter
-from fastapi import Depends, HTTPException
+import json
 
-from rsp_models.user import GetUser, CreateUser
+from fastapi import Depends, HTTPException
+from fastapi.routing import APIRouter
+import redis as redis_module
+from db_connect import Session, get_db
 from db_models.db_funcs import (
     create_user as create_db_user,
     get_user_by_id as get_db_user_by_id,
@@ -9,8 +11,8 @@ from db_models.db_funcs import (
     get_user_with_max_score as get_db_user_with_max_score,
     get_max_user_score,
 )
-from db_connect import Session, engine, get_db
-
+from env_settings import settings as s
+from rsp_models.user import GetUser, CreateUser
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -54,14 +56,27 @@ async def get_user_with_max_score(db: Session = Depends(get_db)):
     """
     Не работает, пока score пустой
     """
-    db_score = get_db_user_with_max_score(db)
+    redis = redis_module.from_url(s.redis_url)
 
-    if not db_score:
-        raise HTTPException(status_code=409, detail="No user with max score exists")
+    key:str = redis.get("max-score")
+    if key:
+        get_user = GetUser.model_validate_json(key)
+    else:
+        db_score = get_db_user_with_max_score(db)
 
-    db_user = get_db_user_by_id(db, db_score.user_id)
+        if not db_score:
+            raise HTTPException(status_code=409, detail="No user with max score exists")
 
-    if not db_user:
-        raise HTTPException(status_code=409, detail=f"User with id {db_score.user_id} and score {db_score.value:_.0f} does not exist")
+        db_user = get_db_user_by_id(db, db_score.user_id)
 
-    return GetUser(id=db_user.id, name=db_user.name, score=db_score.value)
+        if not db_user:
+            raise HTTPException(
+                status_code=409,
+                detail=f"User with id {db_score.user_id} and score {db_score.value:_.0f} does not exist",
+            )
+
+        get_user = GetUser(id=db_user.id, name=db_user.name, score=db_score.value)
+
+        redis.set("max-score", json.dumps(get_user.model_dump(), ensure_ascii=False))
+        redis.expire("max-score", s.redis_timeout)
+    return get_user

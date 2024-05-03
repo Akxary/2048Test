@@ -4,6 +4,7 @@ services:
   # docker-compose build --no-cache backend
   backend:
     hostname: backend
+    restart: always
     build:
       context: ./fast_api_app
       dockerfile: Dockerfile
@@ -16,23 +17,40 @@ services:
       - ./.env.dev
     depends_on:
       - db
+      - cache
 
   db:
     hostname: postgres
     image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     ports:
       - "${OUT_DB_PORT}:${IN_DB_PORT}"
     env_file:
       - ./.env.dev
 
-
-  frontend:
-    build:
-      context: ./vue_app/2048_front
-      dockerfile: Dockerfile
+  cache:
+    hostname: redis
+    image: redis:latest
+    restart: always
     volumes:
-      - ./vue_app/2048_front/:/usr/src/app/
+      - redis_volume_data:/data
     ports:
-      - "8080:8080"
-    depends_on:
-      - backend
+      - "${OUT_REDIS_PORT}:${IN_REDIS_PORT}"
+    env_file:
+      - ./.env.dev
+
+volumes:
+  redis_volume_data:
+  postgres_data:
+
+#  frontend:
+#    build:
+#      context: ./vue_app/2048_front
+#      dockerfile: Dockerfile
+#    volumes:
+#      - ./vue_app/2048_front/:/usr/src/app/
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - backend

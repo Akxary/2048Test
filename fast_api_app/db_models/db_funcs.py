@@ -32,10 +32,14 @@ def delete_user(db: Session, user_name: str) -> bool:
 
 def get_max_user_score(db: Session, user_id: int) -> db_models.Score | None:
     # db_user = get_user_by_id(db, user_id)
-    db_score = db.query(
-        db_models.Score.user_id,
-        func.max(db_models.Score.value).label("value")
-    ).group_by(db_models.Score.user_id).filter(db_models.Score.user_id == user_id).first()
+    db_score = (
+        db.query(
+            db_models.Score.user_id, func.max(db_models.Score.value).label("value")
+        )
+        .group_by(db_models.Score.user_id)
+        .filter(db_models.Score.user_id == user_id)
+        .first()
+    )
     # print(db_score.statement.compile())
     # db_score = db_score.first()
 
@@ -48,12 +52,13 @@ def get_user_with_max_score(db: Session) -> db_models.Score | None:
     sq = db.query(
         db_models.Score,
         func.row_number()
-        .over(
-            order_by=[db_models.Score.value.desc(), db_models.Score.game_time.asc()]
-        ).label("rn")
+        .over(order_by=[db_models.Score.value.desc(), db_models.Score.game_time.asc()])
+        .label("rn"),
     ).subquery()
 
-    db_scores = db.query(sq.c.user_id, sq.c.game_time, sq.c.value).filter(sq.c.rn == 1).first()
+    db_scores = (
+        db.query(sq.c.user_id, sq.c.game_time, sq.c.value).filter(sq.c.rn == 1).first()
+    )
     # print(db_scores.statement.compile())
     # db_scores = db_scores.first()
 

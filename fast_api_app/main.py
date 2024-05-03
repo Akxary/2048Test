@@ -1,10 +1,12 @@
+import os
+
 import uvicorn
 from fastapi import FastAPI
-import os
-from routes.user import router as user_router
-from routes.score import router as score_router
 from fastapi.middleware.cors import CORSMiddleware
+
 from db_connect import Base, engine
+from routes.score import router as score_router
+from routes.user import router as user_router
 
 Base.metadata.create_all(bind=engine)
 
