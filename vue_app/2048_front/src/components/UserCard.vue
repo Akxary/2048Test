@@ -55,12 +55,13 @@ export default {
       let subStr:string;
       while (num>0) {
         subNum=num%1000;
+        num = Math.floor(num/1000);
         subStr = `${subNum}`;
-        while (subStr.length<3) {
+        while (subStr.length<3 && num>0) {
           subStr = "0"+subStr;
         }
         res = subStr+ " " + res;
-        num = Math.floor(num/1000);
+
       }
       return res.trim();
     }

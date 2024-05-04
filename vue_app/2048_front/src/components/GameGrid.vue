@@ -19,11 +19,13 @@ export default {
     }
   },
   created() {
-      this.grid = [... Array(this.GAME_SIZE)].map(()=>[...Array(this.GAME_SIZE)].map(()=>0))
+      this.grid = [... Array(this.GAME_SIZE)].map(()=>[...Array(this.GAME_SIZE)].map(()=>2))
   },
   methods: {
     moveByKey(key: string) {
-      // console.log(key);
+      console.log("key pressed: "+key);
+      console.log("grid before transform:");
+      console.log(this.grid);
       let newGrid: Array<Array<number>>;
       switch (key) {
         case "ArrowUp":
@@ -33,17 +35,43 @@ export default {
           newGrid = this.moveDown();
           break;
         case "ArrowRight":
-          newGrid = this.moveLeft();
+          newGrid = this.moveRight();
           break;
         case "ArrowLeft":
-          newGrid = this.moveRight();
+          newGrid = this.moveLeft();
           break;
         default:
           return;
       }
-      if (newGrid==this.grid) {alert("end game")}
+      if (this.arrayEquals(newGrid, this.grid)) {
+        if (this.countZeros(newGrid)==0) {
+          alert("end game");
+        }
+        return;
+      }
       newGrid = this.createNewElement(newGrid);
       this.grid = newGrid;
+    },
+
+    arrayEquals(left:Array<Array<number>>, right:Array<Array<number>>):boolean {
+      for (let i = 0; i < this.GAME_SIZE; i++) {
+        for (let j = 0; j < this.GAME_SIZE; j++) {
+          if (left[i][j] !== right[i][j]) {return false;}
+        }
+      }
+      return true;
+    },
+
+    countZeros: function (grid: Array<Array<number>>): number {
+      let count = 0;
+      let row:Array<number>;
+      let i:number;
+      for (row of grid) {
+        for (i of row) {
+          if (i == 0) count++;
+        }
+      }
+      return count;
     },
 
     createNewElement(newGrid: Array<Array<number>>): Array<Array<number>> {
@@ -55,7 +83,9 @@ export default {
       do {
         i = Math.floor(Math.random()*(this.GAME_SIZE-1));
         j = Math.floor(Math.random()*(this.GAME_SIZE-1));
-      } while (this.grid[i][j]!=0)
+        console.log("i = "+i);
+        console.log("j = "+j);
+      } while (newGrid[i][j]!=0)
 
       newGrid[i][j] = newVal;
 
@@ -65,10 +95,12 @@ export default {
     processRow(row: Array<number>): Array<number> {
       let el:number;
       let newRow:Array<number> = [];
+      console.log("input row:"+row);
       for (el of row) {
         if (el!=0)
           newRow.push(el);
       }
+      console.log("preprocess row: "+newRow);
       // соединяем элементы, если это возможно
       for (let i:number = newRow.length-1; i >=1; i--) {
         if (newRow[i]==newRow[i-1]) {
@@ -77,20 +109,26 @@ export default {
           this.addScore(newRow[i]);
           // удаляем предыдущий элемент, с которым соединились
           newRow.splice(i-1, 1);
+          i--;
         }
       }
+      console.log("preprocess row2: "+newRow);
+      console.log("game_size - row2.length = " + (this.GAME_SIZE - newRow.length));
       // добавляем нулей
-      for (let i:number = 0; i <newRow.length-1 - this.GAME_SIZE; i++) {
+      const rowLength = newRow.length;
+      for (let i:number = 0; i <this.GAME_SIZE - rowLength; i++) {
+          console.log("[добавление нулей] i = "+i);
            newRow.unshift(0);
       }
+      console.log(newRow);
       return newRow;
     },
 
     transpose(oldGrid:Array<Array<number>>): Array<Array<number>> {
       // создаём пустой массив с нулями
       let newGrid: Array<Array<number>> = [... Array(this.GAME_SIZE)].map(()=>[...Array(this.GAME_SIZE)].map(()=>0));
-      for (let i:number = 0; i <this.GAME_SIZE-1; i++) {
-        for (let j:number=0; j<this.GAME_SIZE-1; j++) {
+      for (let i:number = 0; i <this.GAME_SIZE; i++) {
+        for (let j:number=0; j<this.GAME_SIZE; j++) {
           newGrid[i][j] = oldGrid[j][i];
         }
       }
@@ -99,8 +137,8 @@ export default {
 
     reorder(oldGrid:Array<Array<number>>): Array<Array<number>> {
       let newGrid: Array<Array<number>> = [... Array(this.GAME_SIZE)].map(()=>[...Array(this.GAME_SIZE)].map(()=>0));
-      for (let i:number = 0; i <this.GAME_SIZE-1; i++) {
-        for (let j: number = 0; j < this.GAME_SIZE - 1; j++) {
+      for (let i:number = 0; i <this.GAME_SIZE; i++) {
+        for (let j: number = 0; j < this.GAME_SIZE; j++) {
           newGrid[i][j] = oldGrid[i][this.GAME_SIZE-j-1];
         }
       }
