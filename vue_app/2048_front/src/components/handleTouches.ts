@@ -1,13 +1,13 @@
 export default function handleTouches(elId: string) {
     const el = document.getElementById(elId);
     console.log(el);
-    if (el==null)
+    if (el == null)
         return;
     el.addEventListener('touchstart', handleTouchStart, {passive: false});
     el.addEventListener('touchmove', handleTouchMove, {passive: false});
 
-    let xDown: number = null;
-    let yDown: number = null;
+    let xDown: number | null = null;
+    let yDown: number | null = null;
 
     function getTouches(evt: TouchEvent) {
         return evt.touches// browser API
