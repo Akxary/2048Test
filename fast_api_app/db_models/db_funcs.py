@@ -75,5 +75,5 @@ def add_score(db: Session, score: s_schemas.CreateScore) -> db_models.Score:
     return db_score
 
 
-def get_user_scores(db: Session, user_id: int) -> db_models.Score | None:
+def get_user_scores(db: Session, user_id: int) -> tuple[db_models.Score] | None:
     return db.query(db_models.Score).filter(db_models.Score.user_id == user_id).all()

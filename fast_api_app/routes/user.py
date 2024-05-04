@@ -58,7 +58,7 @@ async def get_user_with_max_score(db: Session = Depends(get_db)):
     """
     redis = redis_module.from_url(s.redis_url)
 
-    key:str = redis.get("max-score")
+    key: str = redis.get("max-score")
     if key:
         get_user = GetUser.model_validate_json(key)
     else:

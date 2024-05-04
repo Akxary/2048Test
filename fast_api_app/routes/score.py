@@ -29,11 +29,14 @@ async def get_user_scores(user_id: int, db: Session = Depends(get_db)):
     if not db_user:
         raise HTTPException(409, f"User with id {user_id} not found")
 
-    db_score = get_db_user_scores(db, user_id)
+    db_scores = get_db_user_scores(db, user_id)
 
-    if not db_score:
+    if not db_scores:
         raise HTTPException(409, f"User with id {user_id} does not have any scores")
 
-    return GetScore(
-        user_id=db_score.user_id, score=db_score.value, game_time=db_score.game_time
-    )
+    return [
+        GetScore(
+            user_id=db_score.user_id, score=db_score.value, game_time=db_score.game_time
+        )
+        for db_score in db_scores
+    ]

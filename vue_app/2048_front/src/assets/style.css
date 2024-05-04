@@ -1,12 +1,28 @@
 
+body {
+    background: rgb(238, 174, 202);
+    background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(35, 54, 77, 1) 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5vh;
+}
 
- body {
-   background: rgb(238,174,202);
-   background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(35,54,77,1) 100%);
-   min-height: 100vh;
- }
+.h1 {
+    /*font-size: 100px;*/
+    font-family: "Roboto", sans-serif;
+}
 
- .h1 {
-     font-size: 100px;
-     font-family: "Roboto", sans-serif;
- }
+button {
+    border-radius: 5px;
+    border: 0.1vh solid coral;
+    font-size: 1.5vh;
+}
+
+button:hover {
+    /*cursor: cell;*/
+    cursor: pointer;
+    scale: 1.1;
+}
