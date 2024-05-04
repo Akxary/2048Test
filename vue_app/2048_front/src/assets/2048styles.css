@@ -1,0 +1,43 @@
+.cell-2048 {
+  background-color: #a48000;
+}
+
+.cell-1024 {
+  background-color: #A49F00;
+}
+
+.cell-512 {
+  background-color: #C0BA18;
+}
+
+.cell-256 {
+  background-color: #D8D346;
+}
+
+.cell-128 {
+  background-color: #E0DC77;
+}
+
+.cell-64 {
+  background-color: #E32424;
+}
+
+.cell-32 {
+  background-color: #E46969;
+}
+
+.cell-16 {
+  background-color: #F5A51B;
+}
+
+.cell-8 {
+  background-color: #F2CE90;
+}
+
+.cell-4 {
+  background-color: #AC8BBF;
+}
+
+.cell-2 {
+  background-color: #D5A8C9;
+}

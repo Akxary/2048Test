@@ -15,6 +15,9 @@ export default {
   methods: {
     addScore(value: number) {
       this.curr_score += value;
+    },
+    setScore(value: number) {
+      this.curr_score = value;
     }
   },
 
@@ -27,7 +30,7 @@ export default {
     <h1>2048</h1>
     <UserCard :BACK_URL="BACK_URL" :curr_score="curr_score" :addScore="addScore"/>
     <br>
-    <GameGrid :addScore="addScore" :GAME_SIZE="GAME_SIZE"/>
+    <GameGrid :setScore="setScore" :curr_score="curr_score" :GAME_SIZE="GAME_SIZE"/>
   </main>
 </template>
 
