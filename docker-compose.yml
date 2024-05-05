@@ -46,7 +46,7 @@ volumes:
 
 #  frontend:
 #    build:
-#      context: ./vue_app/2048_front
+#      context: ./vue_app
 #      dockerfile: Dockerfile
 #    volumes:
 #      - ./vue_app/2048_front/:/usr/src/app/

@@ -20,8 +20,8 @@ export default {
   data() {
     return {
       user_name: 'test',
-      user_data: {id: 1, name: "test", score: -1},
-      max_res_data: {id: -1, name: "", score: -1},
+      user_data: {id: 1, name: "test", score: 0},
+      max_res_data: {id: -1, name: "", score: 0},
       showPopupFlg: false,
       authFlg: false,
       testValue: "1",
@@ -65,27 +65,35 @@ export default {
       }
       return res.trim();
     }
+  },
+
+  computed: {
+    max_score():number {
+      if (this.curr_score>this.user_data.score)
+        return this.curr_score;
+      return this.user_data.score;
+    }
   }
 }
 </script>
 
 <template>
   <div class="ramka">
-    <button @click="addScore(1233)">Добавить счёт</button>
-    <button v-if="authFlg" @click="showPopup">{{ user_name }}</button>
-    <button v-else @click="showPopup">Войти</button>
-    <UserInfo v-if="showPopupFlg"/>
-    <button @click="getMaxRes">Получить рекорд</button>
+<!--    <button @click="addScore(1233)">Добавить счёт</button>-->
+<!--    <button v-if="authFlg" @click="showPopup">{{ user_name }}</button>-->
+<!--    <button v-else @click="showPopup">Войти</button>-->
+<!--    <UserInfo v-if="showPopupFlg"/>-->
+<!--    <button @click="getMaxRes">Получить рекорд</button>-->
+<!--    <br>-->
+<!--    <label for="name-inp">Введите имя пользователя</label>-->
+<!--    <br>-->
+<!--    <input v-model="user_name" id="name-inp">-->
     <br>
-    <label for="name-inp">Введите имя пользователя</label>
-    <br>
-    <input v-model="user_name" id="name-inp">
-    <br>
-    <button @click="getUser">Получить данные пользователя</button>
-    <p>Имя пользователя: {{ user_name }}</p>
+<!--    <button @click="getUser">Получить данные пользователя</button>-->
+<!--    <p>Имя пользователя: {{ user_name }}</p>-->
     <p>Текущий счёт: {{ formatThousands(curr_score) }}</p>
-    <p>Максимальный счёт: {{ user_data.score }}</p>
-    <p>Рекорд {{ formatThousands(max_res_data.score) }} поставлен пользователем {{ max_res_data.name }}</p>
+    <p>Максимальный счёт: {{ formatThousands(max_score) }}</p>
+<!--    <p>Рекорд {{ formatThousands(max_res_data.score) }} поставлен пользователем {{ max_res_data.name }}</p>-->
   </div>
 </template>
 
