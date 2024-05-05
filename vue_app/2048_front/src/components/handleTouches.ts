@@ -1,6 +1,6 @@
 export default function handleTouches(elId: string) {
     const el = document.getElementById(elId);
-    console.log(el);
+    // console.log(el);
     if (el == null)
         return;
     el.addEventListener('touchstart', handleTouchStart, {passive: false});
@@ -14,7 +14,7 @@ export default function handleTouches(elId: string) {
     }
 
     function handleTouchStart(evt: TouchEvent) {
-        // evt.preventDefault();
+        evt.preventDefault();
         const firstTouch = getTouches(evt)[0];
         xDown = firstTouch.clientX;
         yDown = firstTouch.clientY;
@@ -35,25 +35,25 @@ export default function handleTouches(elId: string) {
         if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
             if (xDiff > 0) {
                 /* left swipe */
-                console.log("swipe left");
-                console.log("dispath swipe left");
+                // console.log("swipe left");
+                // console.log("dispath swipe left");
                 if (el)
                     el.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowLeft', code: 'ArrowLeft'}));
             } else {
                 /* right swipe */
-                console.log("swipe right");
+                // console.log("swipe right");
                 if (el)
                     el.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight', code: 'ArrowRight'}));
             }
         } else {
             if (yDiff > 0) {
                 /* up swipe */
-                console.log("swipe up");
+                // console.log("swipe up");
                 if (el)
                     el.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', code: 'ArrowUp'}));
             } else {
                 /* down swipe */
-                console.log("swipe down");
+                // console.log("swipe down");
                 if (el)
                     el.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', code: 'ArrowDown'}));
 

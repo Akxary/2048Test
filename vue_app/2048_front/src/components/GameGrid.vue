@@ -1,6 +1,7 @@
 <script lang="ts">
 import handleTouches from './handleTouches';
 import handlePresses from "./handlePresses";
+
 export default {
   props: {
 
@@ -20,22 +21,25 @@ export default {
   data() {
     return {
       grid: [[0]],
+      gridChanged: [[false]],
       addToScore: 0,
       showPopupFlg: false,
     }
   },
   created() {
-    this.grid = [...Array(this.GAME_SIZE)].map((j, idx0) => [...Array(this.GAME_SIZE)].map((i, idx) => 2 * Math.pow(2, idx0+idx)));
-      },
-  mounted() {
-      handleTouches("game-container");
-      handlePresses("game-container");
+    this.grid = [...Array(this.GAME_SIZE)].map((j, idx0) => [...Array(this.GAME_SIZE)].map((i, idx) => 2 * Math.pow(2, idx0 + idx)));
+    this.gridChanged = [...Array(this.GAME_SIZE)].map(() => [...Array(this.GAME_SIZE)].map(() => false));
   },
+  mounted() {
+    handleTouches("game-container");
+    handlePresses("game-container");
+  },
+
   methods: {
     moveByKey(key: string) {
-      console.log("key pressed: " + key);
-      console.log("grid before transform:");
-      console.log(this.grid);
+      // console.log("key pressed: " + key);
+      // console.log("grid before transform:");
+      // console.log(this.grid);
       // обнуление очков в накопителе
       this.addToScore = 0;
       let newGrid: Array<Array<number>>;
@@ -55,25 +59,48 @@ export default {
         default:
           return;
       }
-      if (this.arrayEquals(newGrid, this.grid)) {
 
+      if (this.arrayEquals(newGrid, this.grid)) {
         return;
       }
       // начисление очков
       this.setScore(this.curr_score + this.addToScore);
 
       newGrid = this.createNewElement(newGrid);
+      // расставляем флаги для анимации
+      // this.calcGridChanges(this.grid, newGrid);
+
       this.grid = newGrid;
       // проверка жизнеспособности нового положения игры
       if (this.countZeros(this.grid) == 0) {
+        console.log(this.grid);
+        console.log("мы попали в блок, где нет свободных клеток!");
         if (
             this.arrayEquals(this.grid, this.moveRight())
-            // && this.arrayEquals(this.grid, this.moveLeft())
-            // && this.arrayEquals(this.grid, this.moveUp())
-            // && this.arrayEquals(this.grid, this.moveDown())
+            && this.arrayEquals(this.grid, this.moveLeft())
+            && this.arrayEquals(this.grid, this.moveUp())
+            && this.arrayEquals(this.grid, this.moveDown())
         ) {
+          console.log("мы попали в блок, где нет вариантов выхода из этих клеток");
+          console.log("this.arrayEquals(this.grid, this.moveRight()) = " + this.arrayEquals(this.grid, this.moveRight()));
+          console.log("this.arrayEquals(this.grid, this.moveLeft()) = " + this.arrayEquals(this.grid, this.moveLeft()));
+          console.log("this.arrayEquals(this.grid, this.moveUp()) = " + this.arrayEquals(this.grid, this.moveUp()));
+          console.log("this.arrayEquals(this.grid, this.moveDown()) = " + this.arrayEquals(this.grid, this.moveDown()));
+
           alert(`Вы проиграли. Ваш счёт: ${this.curr_score}`);
           // this.newGame();
+        }
+      }
+
+    },
+
+    calcGridChanges(left: Array<Array<number>>, right: Array<Array<number>>) {
+      this.gridChanged = [...Array(this.GAME_SIZE)].map(() => [...Array(this.GAME_SIZE)].map(() => false))
+      for (let i = 0; i < this.GAME_SIZE; i++) {
+        for (let j = 0; j < this.GAME_SIZE; j++) {
+          if (left[i][j] !== right[i][j]) {
+            this.gridChanged[i][j] = true;
+          }
         }
       }
     },
@@ -89,7 +116,7 @@ export default {
       return true;
     },
 
-    countZeros: function (grid: Array<Array<number>>): number {
+    countZeros(grid: Array<Array<number>>): number {
       let count = 0;
       let row: Array<number>;
       let i: number;
@@ -208,16 +235,11 @@ export default {
       return this.transpose(this.reorder(newGrid));
     },
 
-    setFocus() {
-      this.$refs.gamegrid.focus();
-      // console.log(this.$refs.gamegrid);
-    },
-
     newGame() {
       this.setScore(0);
       this.grid = [...Array(this.GAME_SIZE)].map(() => [...Array(this.GAME_SIZE)].map(() => 0));
-      this.grid = this.createNewElement(this.createNewElement(this.grid));
-      // this.setFocus();
+      for (let i:number=0; i<10;i++)
+        this.grid = this.createNewElement(this.grid);
     }
   }
 }
@@ -226,35 +248,40 @@ export default {
 <template>
   <div class="line-div">
     <button @click="newGame">Новая игра</button>
-<!--    <input ref="gamegrid" @keydown="(event)=>{console.log(event);moveByKey(event.key)}" type="text" class="micro-input">-->
   </div>
-<!--  @keydown="(event)=>{console.log(event);moveByKey(event.key)}"-->
-<!--@click="setFocus"-->
-  <div id="game-container"  @keydown="(event)=>{console.log(event);moveByKey(event.key)}"  class="grid-style">
+  <div id="game-container" @keydown="(event)=>{moveByKey(event.key)}" class="grid-style">
     <div v-for="(row, idx) in grid" :key="idx" class="line-div">
       <div v-for="(num, idx1) in row" :key="idx1" style="padding: 3px">
-        <div v-if="num!=0" :class="num<2048?`cell-${num}`:`cell-2048`" class="cell-no-0 base-cell">{{ num }}</div>
-        <div v-else class="cell-0 base-cell">-</div>
+        <transition  mode="out-in">
+<!--          :name="gridChanged[idx][idx1]?'slide-fade':''"-->
+          <div v-if="num!=0" :class="num<2048?`cell-${num}`:`cell-2048`" class="cell-no-0 base-cell">{{ num }}</div>
+          <div v-else class="cell-0 base-cell">-</div>
+        </transition>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-input, input:focus {
-  font-size: 0;
-  width: 0;
-  height: 0;
-  border: none;
-  background: transparent;
-  color: transparent;
+.slide-fade-enter-active {
+  transition: opacity 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: opacity 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: scale(0.5);
+  opacity: 0;
 }
 
 
 .grid-style {
   border: coral 5px solid;
   border-radius: 5px;
-  background-color: aliceblue;
+  background-color: rgba(187, 200, 203, 0.92);
   display: flex;
   flex-direction: column;
 }
