@@ -68,7 +68,7 @@ export default {
 
       newGrid = this.createNewElement(newGrid);
       // расставляем флаги для анимации
-      // this.calcGridChanges(this.grid, newGrid);
+      this.calcGridChanges(this.grid, newGrid);
 
       this.grid = newGrid;
       // проверка жизнеспособности нового положения игры
@@ -252,10 +252,11 @@ export default {
   <div id="game-container" @keydown="(event)=>{moveByKey(event.key)}" class="grid-style">
     <div v-for="(row, idx) in grid" :key="idx" class="line-div">
       <div v-for="(num, idx1) in row" :key="idx1" style="padding: 3px">
-        <transition  mode="out-in">
+        <transition  mode="out-in" name="slide-fade">
 <!--          :name="gridChanged[idx][idx1]?'slide-fade':''"-->
-          <div v-if="num!=0" :class="num<2048?`cell-${num}`:`cell-2048`" class="cell-no-0 base-cell">{{ num }}</div>
-          <div v-else class="cell-0 base-cell">-</div>
+          <div :key="num" :class="num===0?`cell-0`:((num<2048?`cell-${num}`:`cell-2048`) + ` cell-no-0`)" class="base-cell">
+            {{ num }}
+          </div>
         </transition>
       </div>
     </div>
@@ -264,17 +265,33 @@ export default {
 
 <style scoped>
 .slide-fade-enter-active {
-  transition: opacity 0.3s ease-out;
+  transition: all 0.05s ease-out; /*ease-out slide-fade-in*/
 }
 
+
 .slide-fade-leave-active {
-  transition: opacity 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+  transition: all 0.05s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
+/* slide-fade-in cubic-bezier(1, 0.5, 0.8, 1)*/
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: scale(0.5);
   opacity: 0;
+}
+
+
+@keyframes slide-fade-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 
