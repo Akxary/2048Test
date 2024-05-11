@@ -238,7 +238,7 @@ export default {
     newGame() {
       this.setScore(0);
       this.grid = [...Array(this.GAME_SIZE)].map(() => [...Array(this.GAME_SIZE)].map(() => 0));
-      for (let i:number=0; i<10;i++)
+      for (let i:number=0; i<2;i++)
         this.grid = this.createNewElement(this.grid);
     }
   }
